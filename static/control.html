@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Timer Display</title>
+  <style>
+    body {
+  background-color: #000;
+  font-family: 'Noto Sans', sans-serif;
+  color: #fff;
+}
+    p {
+   font-family: 'Noto Sans', sans-serif;
+   font-weight: bold;
+  color: #fff;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto auto;
+  height: 1px;
+  line-height: 1px;
+  text-align: center;
+  color: #ff0;
+  font-size: 400px;
+    }
+    
+  </style>
+</head>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<body>
+    <button onclick="socket.emit('Reset');">Reset</button>
+    <button onclick="socket.emit('Play');">Start</button>
+    <button onclick="socket.emit('Pause');">Play/Pause</button>
+</body>
+<script>
+var socket = io()      
+</script>
+</html>
