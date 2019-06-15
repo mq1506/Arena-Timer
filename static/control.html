@@ -30,12 +30,13 @@
 </head>
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.4/howler.min.js"></script>
 <body>
     <button onclick="socket.emit('Reset');">Reset</button>
-    <button onclick="socket.emit('Play');">Start</button>
-    <button onclick="socket.emit('Pause');">Play/Pause</button>
+    <button onclick="socket.emit('Start');">Start</button>
+    <button onclick="socket.emit('Pause/Play');">Pause</button>
 </body>
 <script>
-var socket = io()      
+var socket = io()  
 </script>
 </html>

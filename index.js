@@ -5,17 +5,19 @@ var Timer = require('easytimer.js');
 var timer = new Timer();
 var serveStatic = require('serve-static')
 var time = '3:00';
-
-app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/static/index.html');
-});
-app.use(serveStatic('static'));
+var redR = false;
+var blueR = false; 
 timer.start({
   countdown: true,
   startValues: {
     seconds: 180
   }
 });
+app.get('/', function (req, res) {
+  res.sendFile(__dirname + '/static/index.html');
+});
+app.use(serveStatic('static'));
+
 timer.pause(); 
 io.on('connection', function (socket) {
   console.log('a user connected');
@@ -30,10 +32,10 @@ io.on('connection', function (socket) {
   socket.on('Reset', function () {
     console.log('Reset');
     timer.reset();
-    io.emit('chat message', '3:00');
+    io.emit('clock', '3:00');
     timer.pause();
   });
-  socket.on('Play', function () {
+  socket.on('Start', function () {
     timer.start();
     });
   
@@ -47,12 +49,15 @@ io.on('connection', function (socket) {
   });
   socket.on('Bready', function () {
     console.log('Blue Ready');
+    io.emit('playAudio', '/audio/RedTeamAreYouReady.wav' )
   });
 });
 
 
 timer.addEventListener('secondsUpdated', function (e) {
   time = (timer.getTimeValues().toString()).substring(4);
-  io.emit('chat message', time);
+  io.emit('clock', time);
   console.log(time);
 });
+
+

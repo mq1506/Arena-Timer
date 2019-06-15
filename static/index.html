@@ -30,23 +30,104 @@
 </head>
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.4/howler.min.js"></script>
 
 <body>
   <p></p>
 </body>
 <script>
+  var blueTeamAreYouReadyAudio = new Howl({ src: ['/audio/WhiteTeamAreYouReady.wav'] });
+  var redTeamAreYouReadyAudio = new Howl({ src: ['/audio/RedTeamAreYouReady.wav'] });
+  var brawl = new Howl({ src: ['/audio/321BRAWL.wav'] });
+  var redReadyNoise = new Howl({ src: ['/audio/RedReadyNoise.wav'] });
+  var blueReadyNoise = new Howl({ src: ['/audio/WhiteReadyNoise.wav'] });
+  var tapOutNoise = new Howl({ src: ['/audio/10SECONDSREMAINING.wav'] });
+  var tenseconds = new Howl({ src: ['/audio/TAPOUTNOISE.wav'] });
+  var buzzer = new Howl({ src: ['/audio/BUZZER.wav'] });
   var socket = io()
-  socket.on('chat message', function (msg) {
+  var clock
+  var matchOn = false;
+  var Rready = false;
+  var Bready = false;
+  var down = false
+  socket.on('clock', function (msg) {
     $('p').text(msg);
+    if (msg === "0:00"){
+    buzzer.play();
+    console.log("match over");
+  }else if (msg === "0:10"){
+    tenseconds.play();
+  }
   });
-
   document.addEventListener('keydown', function (event) {
-    if (event.keyCode == 37) {
+    if (down) return;
+    down = true;
+    if (event.key == 'd') {
       socket.emit('Rready');
-    } else if (event.keyCode == 39) {
+      console.log('Red Ready');
+      if (Rready == false) {
+        redReadyNoise.play();
+        Rready = true;
+      }
+      tapOut();
+
+    } else if (event.key == 'a') {
       socket.emit('Bready');
+      console.log('Blue Ready');
+      if (Bready == false) {
+        blueReadyNoise.play();
+        Bready = true;
+      }
+      tapOut();
+
+    } else if (event.key == 's') {
+      matchStart();
+      //console.log('admin key hit');
     }
-  });
+  }, false);
+
+  document.addEventListener('keyup', function () {
+    down = false;
+  }, false);
+
+ 
+  function matchStart() {
+    if (matchOn == false & Rready == false) {
+      console.log('play red team ready');
+      redTeamAreYouReadyAudio.play();
+    } else if (matchOn == false & Bready == false & Rready == true) {
+      console.log('play blue team ready');
+      blueTeamAreYouReadyAudio.play();
+    } else if (matchOn == false & Bready == true & Rready == true) {
+      //play countdown
+      brawl.play();
+      setTimeout(go, 3000);
+    } else if (matchOn == true & Bready == true & Rready == true) {
+      socket.emit('Reset');
+      console.log('Match Reset');
+      buzzer.play();
+      matchOn = false;
+      Bready = false;
+      Rready = false;
+    }
+  }
+  function go() {
+    socket.emit('Start');
+    console.log('Start!');
+    matchOn = true;
+  }
+  function tapOut() {
+    if (matchOn == true) {
+      socket.emit('Reset');
+      console.log('Tap Out!');
+      tapOutNoise.play();
+      matchOn = false;
+      Bready = false;
+      Rready = false;
+    }
+  }
+
+
 </script>
 
 </html>
