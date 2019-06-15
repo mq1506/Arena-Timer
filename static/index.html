@@ -41,9 +41,11 @@
   var brawl = new Howl({ src: ['/audio/321BRAWL.wav'] });
   var redReadyNoise = new Howl({ src: ['/audio/RedReadyNoise.wav'] });
   var blueReadyNoise = new Howl({ src: ['/audio/WhiteReadyNoise.wav'] });
-  var tapOutNoise = new Howl({ src: ['/audio/10SECONDSREMAINING.wav'] });
-  var tenseconds = new Howl({ src: ['/audio/TAPOUTNOISE.wav'] });
+  var tapOutNoise = new Howl({ src: ['/audio/TAPOUTNOISE.wav'] });
+  var tenseconds = new Howl({ src: ['/audio/10SECONDSREMAINING.wav'] });
   var buzzer = new Howl({ src: ['/audio/BUZZER.wav'] });
+  var matchOver = new Howl({ src: ['/audio/321MATCHOVER.wav'] });
+  var oneMin = new Howl({ src: ['/audio/ONEMINUTEREMAINING.wav'] }); 
   var socket = io()
   var clock
   var matchOn = false;
@@ -52,11 +54,16 @@
   var down = false
   socket.on('clock', function (msg) {
     $('p').text(msg);
-    if (msg === "0:00"){
-    buzzer.play();
+    if (msg === "0:03"){
+    matchOver.play();
     console.log("match over");
+    var matchOn = false;
+    var Rready = false;
+    var Bready = false;
   }else if (msg === "0:10"){
     tenseconds.play();
+  }else if (msg === "1:00"){
+    oneMin.play();
   }
   });
   document.addEventListener('keydown', function (event) {
